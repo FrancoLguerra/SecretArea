@@ -1,6 +1,8 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import dao.PacienteDAO;
+import dao.TurnoDAO;
 
 public class Conexion {
     private static final String URL = "jdbc:mysql://mysql-secretarea.alwaysdata.net:3306/secretarea_db";  // Reemplaza con el host de AlwaysData y tu base de datos
@@ -21,6 +23,14 @@ public class Conexion {
             e.printStackTrace();
         }
         return conexion;
+    }
+
+    public static PacienteDAO getPacienteDAO() throws SQLException {
+        return new PacienteDAO(conectar());
+    }
+
+    public static TurnoDAO getTurnoDAO() throws SQLException {
+        return new TurnoDAO(conectar());
     }
 
     public static void main(String[] args) {
