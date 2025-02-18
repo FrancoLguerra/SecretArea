@@ -7,6 +7,9 @@ import model.Turno;
 import model.Paciente;
 import java.sql.ResultSet;
 import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class TurnoDAO {
 
@@ -17,7 +20,7 @@ public class TurnoDAO {
     }
 
     public void insert(Turno turno) {
-        String sql = "INSERT INTO turno (fecha, hora, id_paciente) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO turnos (fecha, hora, paciente_id) VALUES (?, ?, ?)";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setDate(1, new java.sql.Date(turno.getFecha().getTime()));
@@ -30,7 +33,7 @@ public class TurnoDAO {
     }
 
     public void update(Turno turno) {
-        String sql = "UPDATE turno SET fecha = ?, hora = ?, id_paciente = ? WHERE id = ?";
+        String sql = "UPDATE turnos SET fecha = ?, hora = ?, paciente_id = ? WHERE id = ?";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setDate(1, new java.sql.Date(turno.getFecha().getTime()));
@@ -44,7 +47,7 @@ public class TurnoDAO {
     }
 
     public void delete(Turno turno) {
-        String sql = "DELETE FROM turno WHERE id = ?";
+        String sql = "DELETE FROM turnos WHERE id = ?";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, turno.getId());
@@ -55,7 +58,7 @@ public class TurnoDAO {
     }
 
     public void delete(int id) {
-        String sql = "DELETE FROM turno WHERE id = ?";
+        String sql = "DELETE FROM turnos WHERE id = ?";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, id);
@@ -67,7 +70,7 @@ public class TurnoDAO {
     }
 
     public void deleteByPacienteId(int pacienteId) {
-        String sql = "DELETE FROM turno WHERE id_paciente = ?";
+        String sql = "DELETE FROM turnos WHERE paciente_id = ?";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, pacienteId);
@@ -78,7 +81,7 @@ public class TurnoDAO {
     }
 
     public Turno select(Paciente paciente, Date fecha) {
-        String sql = "SELECT * FROM turno WHERE id_paciente = ? AND fecha = ?";
+        String sql = "SELECT * FROM turnos WHERE paciente_id = ? AND fecha = ?";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, paciente.getId());
@@ -87,7 +90,7 @@ public class TurnoDAO {
             if (resultSet.next()) {
                 Turno turno = new Turno();
                 turno.setId(resultSet.getInt("id"));
-                turno.setPacienteId(resultSet.getInt("id_paciente"));
+                turno.setPacienteId(resultSet.getInt("paciente_id"));
                 turno.setFecha(resultSet.getDate("fecha"));
                 turno.setHora(resultSet.getString("hora"));
                 return turno;
@@ -98,25 +101,26 @@ public class TurnoDAO {
         return null;
     }
 
-    // retorno todos los turnos del día
-    public Turno select(Date fecha) {
-        String sql = "SELECT * FROM turno WHERE fecha = ?";
+    // obtengo todos los turnos de una fecha
+    public List<Turno> select(Date fecha) {
+        List<Turno> turnos = new ArrayList<>();
+        String sql = "SELECT * FROM turnos WHERE fecha = ?";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setDate(1, new java.sql.Date(fecha.getTime()));
             ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
+            while (resultSet.next()) {
                 Turno turno = new Turno();
                 turno.setId(resultSet.getInt("id"));
-                turno.setPacienteId(resultSet.getInt("id_paciente"));
+                turno.setPacienteId(resultSet.getInt("paciente_id"));
                 turno.setFecha(resultSet.getDate("fecha"));
                 turno.setHora(resultSet.getString("hora"));
-                return turno;
+                turnos.add(turno);
             }
+            return turnos;
         } catch (SQLException e) {
             e.printStackTrace();
-
-        }
+}
         return null;
     }
 }

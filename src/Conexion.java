@@ -7,7 +7,7 @@ import dao.TurnoDAO;
 public class Conexion {
     private static final String URL = "jdbc:mysql://mysql-secretarea.alwaysdata.net:3306/secretarea_db";  // Reemplaza con el host de AlwaysData y tu base de datos
     private static final String USUARIO = "400223";  // Reemplaza con tu usuario de AlwaysData
-    private static final String CONTRASEÑA = System.getenv("DB_SECRETAREA_PASSWORD");  // Reemplaza con tu contraseña de AlwaysData  
+    private static final String CONTRASEÑA = "Biel2812.";  // Reemplaza con tu contraseña de AlwaysData  
 
     public static Connection conectar() {
         Connection conexion = null;

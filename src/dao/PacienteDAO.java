@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import model.Paciente;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PacienteDAO {
     private Connection connection;
@@ -13,7 +16,7 @@ public class PacienteDAO {
     }
 
     public void insert(Paciente paciente) {
-        String sql = "INSERT INTO paciente (nombre, apellido, fecha_nacimiento, dni, frecuencia) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO pacientes (nombre, apellido, fecha_nacimiento, dni, frecuencia) VALUES (?, ?, ?, ?, ?)";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, paciente.getNombre());
@@ -29,7 +32,7 @@ public class PacienteDAO {
     }
 
     public void update(Paciente paciente) {
-        String sql = "UPDATE paciente SET nombre = ?, apellido = ?, fecha_nacimiento = ?, dni = ?, frecuencia = ? WHERE id = ?";
+        String sql = "UPDATE pacientes SET nombre = ?, apellido = ?, fecha_nacimiento = ?, dni = ?, frecuencia = ? WHERE id = ?";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, paciente.getNombre());
@@ -46,7 +49,7 @@ public class PacienteDAO {
     }
 
     public void delete(Paciente paciente) {
-        String sql = "DELETE FROM paciente WHERE id = ?";
+        String sql = "DELETE FROM pacientes WHERE id = ?";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, paciente.getId());
@@ -58,7 +61,7 @@ public class PacienteDAO {
     }
 
     public void delete(int id) {
-        String sql = "DELETE FROM paciente WHERE id = ?";
+        String sql = "DELETE FROM pacientes WHERE id = ?";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, id);
@@ -70,7 +73,7 @@ public class PacienteDAO {
     }
 
     public Paciente select(int id) {
-        String sql = "SELECT * FROM paciente WHERE id = ?";
+        String sql = "SELECT * FROM pacientes WHERE id = ?";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, id);
@@ -83,7 +86,7 @@ public class PacienteDAO {
     }
 
     public Paciente select(String dni) {
-        String sql = "SELECT * FROM paciente WHERE dni = ?";
+        String sql = "SELECT * FROM pacientes WHERE dni = ?";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, dni);
@@ -96,7 +99,7 @@ public class PacienteDAO {
     }
 
     public Paciente select(String nombre, String apellido) {
-        String sql = "SELECT * FROM paciente WHERE nombre = ? AND apellido = ?";
+        String sql = "SELECT * FROM pacientes WHERE nombre = ? AND apellido = ?";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, nombre);
@@ -108,6 +111,28 @@ public class PacienteDAO {
         }
         return null;
     }
+    //obtengo todos los pacientes
+    public List<Paciente> obtenerPacientes() {
+        List<Paciente> pacientes = new ArrayList<>();
+        String sql = "SELECT * FROM pacientes";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Paciente paciente = new Paciente();
+                paciente.setId(resultSet.getInt("id"));
+                paciente.setNombre(resultSet.getString("nombre"));
+                paciente.setApellido(resultSet.getString("apellido"));
+                paciente.setFechaNacimiento(resultSet.getDate("fecha_nacimiento"));
+                paciente.setDni(resultSet.getString("dni"));
+                paciente.setFrecuencia(resultSet.getString("frecuencia"));
+                pacientes.add(paciente);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return pacientes;
+    }
 
-    
+
 }
